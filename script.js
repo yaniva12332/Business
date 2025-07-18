@@ -97,6 +97,18 @@ function setupFormListeners() {
     if (registerForm) {
         registerForm.addEventListener('submit', handleRegister);
     }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownContent = document.getElementById('dropdownContent');
+        
+        if (userDropdown && dropdownContent && 
+            !userDropdown.contains(event.target)) {
+            userDropdown.classList.remove('active');
+            dropdownContent.classList.remove('show');
+        }
+    });
 }
 
 // Navigation functions
@@ -209,10 +221,57 @@ function logout() {
     showMessage('התנתקת בהצלחה', 'success');
     
     // Update navigation
+    updateNavigationForLogout();
+}
+
+function updateNavigationForLogout() {
     const btnLogin = document.querySelector('.btn-login');
+    const userDropdown = document.getElementById('userDropdown');
+    
     if (btnLogin) {
+        btnLogin.style.display = 'block';
         btnLogin.textContent = 'התחברות';
         btnLogin.onclick = openLoginModal;
+    }
+    
+    if (userDropdown) {
+        userDropdown.style.display = 'none';
+    }
+}
+
+function updateNavigationForLogin() {
+    const btnLogin = document.querySelector('.btn-login');
+    const userDropdown = document.getElementById('userDropdown');
+    const userName = document.querySelector('.user-name');
+    
+    if (btnLogin) {
+        btnLogin.style.display = 'none';
+    }
+    
+    if (userDropdown && userName && currentUser) {
+        userDropdown.style.display = 'inline-block';
+        userName.textContent = currentUser.name;
+    }
+}
+
+// User dropdown functions
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    const dropdownContent = document.getElementById('dropdownContent');
+    
+    if (dropdown && dropdownContent) {
+        dropdown.classList.toggle('active');
+        dropdownContent.classList.toggle('show');
+    }
+}
+
+function closeUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    const dropdownContent = document.getElementById('dropdownContent');
+    
+    if (dropdown && dropdownContent) {
+        dropdown.classList.remove('active');
+        dropdownContent.classList.remove('show');
     }
 }
 
@@ -351,11 +410,8 @@ function showUserDashboard() {
     }
     
     // Update navigation
-    const btnLogin = document.querySelector('.btn-login');
-    if (btnLogin) {
-        btnLogin.textContent = `שלום ${currentUser.name}`;
-        btnLogin.onclick = showUserDashboard;
-    }
+    updateNavigationForLogin();
+    closeUserDropdown();
 }
 
 function hideAllDashboards() {
