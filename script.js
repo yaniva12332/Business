@@ -71,7 +71,7 @@ function initializeApp() {
     const savedUser = localStorage.getItem('currentUser');
     if (savedUser) {
         currentUser = JSON.parse(savedUser);
-        showUserDashboard();
+        updateNavigationForLogin();
     }
     
     // Set minimum date for booking
@@ -217,7 +217,6 @@ function handleRegister(e) {
 function logout() {
     currentUser = null;
     localStorage.removeItem('currentUser');
-    hideAllDashboards();
     showMessage('התנתקת בהצלחה', 'success');
     
     // Update navigation
@@ -398,15 +397,10 @@ function resetBookingForm() {
 
 // Dashboard functions
 function showUserDashboard() {
-    hideAllDashboards();
-    
     if (currentUser.role === 'admin') {
-        document.getElementById('adminPanel').style.display = 'block';
-        loadAdminBookings();
-        loadClientsList();
+        openAdminPanelInNewPage();
     } else {
-        document.getElementById('userDashboard').style.display = 'block';
-        loadUserBookings();
+        openUserDashboardInNewPage();
     }
     
     // Update navigation
@@ -414,15 +408,275 @@ function showUserDashboard() {
     closeUserDropdown();
 }
 
-function hideAllDashboards() {
-    document.getElementById('userDashboard').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'none';
+function openUserDashboardInNewPage() {
+    // Create the dashboard HTML content
+    const dashboardHTML = createUserDashboardHTML();
     
-    // Show main content
-    document.querySelector('.hero').style.display = 'flex';
-    document.querySelector('.about').style.display = 'block';
-    document.querySelector('.services').style.display = 'block';
-    document.querySelector('.contact').style.display = 'block';
+    // Open in new window/tab
+    const newWindow = window.open('', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    newWindow.document.write(dashboardHTML);
+    newWindow.document.close();
+    
+    // Setup the new window
+    setupDashboardWindow(newWindow, 'user');
+}
+
+function openAdminPanelInNewPage() {
+    // Create the admin panel HTML content
+    const adminHTML = createAdminPanelHTML();
+    
+    // Open in new window/tab
+    const newWindow = window.open('', '_blank', 'width=1400,height=900,scrollbars=yes,resizable=yes');
+    newWindow.document.write(adminHTML);
+    newWindow.document.close();
+    
+    // Setup the new window
+    setupDashboardWindow(newWindow, 'admin');
+}
+
+function createUserDashboardHTML() {
+    return `
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>לוח הבקרה שלי - דני פיט</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard" style="display: block; padding: 20px;">
+        <div class="dashboard-header">
+            <h2>לוח הבקרה שלי</h2>
+            <button onclick="window.close()" class="btn-secondary">סגור</button>
+        </div>
+        <div class="dashboard-content">
+            <div class="dashboard-card">
+                <h3>האימונים שלי</h3>
+                <div id="userBookings"></div>
+                <button class="btn-primary" onclick="openBookingModal()">קבע אימון חדש</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bookingModal')">&times;</span>
+            <h2>קביעת אימון</h2>
+            <div id="bookingStep1" class="booking-step">
+                <h3>בחר סוג אימון</h3>
+                <div class="service-selection">
+                    <div class="service-option" onclick="selectService('personal')">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>אימון אישי</span>
+                        <div class="price">₪150</div>
+                    </div>
+                    <div class="service-option" onclick="selectService('group')">
+                        <i class="fas fa-users"></i>
+                        <span>אימון קבוצתי</span>
+                        <div class="price">₪80</div>
+                    </div>
+                    <div class="service-option" onclick="selectService('online')">
+                        <i class="fas fa-video"></i>
+                        <span>אימון אונליין</span>
+                        <div class="price">₪100</div>
+                    </div>
+                </div>
+            </div>
+            <div id="bookingStep2" class="booking-step" style="display: none;">
+                <h3>בחר תאריך ושעה</h3>
+                <div class="date-picker">
+                    <input type="date" id="selectedDate" onchange="loadAvailableSlots()">
+                </div>
+                <div class="time-slots" id="timeSlots"></div>
+                <button class="btn-primary" onclick="confirmBooking()" style="margin-top: 20px;">אשר הזמנה</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+}
+
+function createAdminPanelHTML() {
+    return `
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>פאנל ניהול - דני פיט</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard" style="display: block; padding: 20px;">
+        <div class="dashboard-header">
+            <h2>פאנל ניהול</h2>
+            <button onclick="window.close()" class="btn-secondary">סגור</button>
+        </div>
+        <div class="dashboard-tabs">
+            <button class="tab-btn active" onclick="showTab('bookings')">תורים</button>
+            <button class="tab-btn" onclick="showTab('content')">תוכן</button>
+            <button class="tab-btn" onclick="showTab('clients')">לקוחות</button>
+        </div>
+        <div class="dashboard-content">
+            <div id="bookingsTab" class="tab-content active">
+                <h3>ניהול תורים</h3>
+                <div id="adminBookings"></div>
+            </div>
+            <div id="contentTab" class="tab-content">
+                <h3>עריכת תוכן</h3>
+                <div class="content-editor">
+                    <label>כותרת ראשית:</label>
+                    <input type="text" id="heroTitle" value="שנה את החיים שלך עם דני פיט">
+                    <label>תיאור:</label>
+                    <textarea id="heroDescription">מאמן כושר אישי מקצועי עם ניסיון של 8 שנים בתחום...</textarea>
+                    <button class="btn-primary" onclick="updateContent()">עדכן תוכן</button>
+                </div>
+            </div>
+            <div id="clientsTab" class="tab-content">
+                <h3>לקוחות רשומים</h3>
+                <div id="clientsList"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+}
+
+function setupDashboardWindow(newWindow, type) {
+    // Wait for the window to be ready
+    newWindow.addEventListener('load', function() {
+        // Copy all the necessary functions and variables to the new window
+        copyFunctionsToNewWindow(newWindow);
+        
+        // Initialize the dashboard content
+        if (type === 'user') {
+            newWindow.loadUserBookings();
+            // Set minimum date for booking
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = newWindow.document.getElementById('selectedDate');
+            if (dateInput) {
+                dateInput.min = today;
+            }
+        } else if (type === 'admin') {
+            newWindow.loadAdminBookings();
+            newWindow.loadClientsList();
+        }
+    });
+}
+
+function copyFunctionsToNewWindow(newWindow) {
+    // Copy all necessary variables
+    newWindow.currentUser = currentUser;
+    newWindow.selectedService = null;
+    newWindow.selectedDate = null;
+    newWindow.selectedTime = null;
+    newWindow.bookings = bookings;
+    newWindow.users = users;
+    newWindow.timeSlots = timeSlots;
+    
+    // Copy all necessary functions
+    newWindow.loadUserBookings = loadUserBookings;
+    newWindow.loadAdminBookings = loadAdminBookings;
+    newWindow.loadClientsList = loadClientsList;
+    newWindow.createBookingElement = createBookingElement;
+    newWindow.updateBookingStatus = updateBookingStatus;
+    newWindow.formatDate = formatDate;
+    newWindow.showMessage = showMessage;
+    newWindow.showTab = showTab;
+    newWindow.updateContent = updateContent;
+    newWindow.openBookingModal = openBookingModal;
+    newWindow.closeModal = closeModal;
+    newWindow.selectService = selectService;
+    newWindow.loadAvailableSlots = loadAvailableSlots;
+    newWindow.selectTimeSlot = selectTimeSlot;
+    newWindow.confirmBooking = confirmBooking;
+    newWindow.resetBookingForm = resetBookingForm;
+    
+    // Update localStorage functions for the new window
+    newWindow.updateBookingStatus = function(bookingId, newStatus) {
+        const booking = newWindow.bookings.find(b => b.id === bookingId);
+        if (booking) {
+            booking.status = newStatus;
+            localStorage.setItem('bookings', JSON.stringify(newWindow.bookings));
+            
+            // Update the original window's data too
+            window.bookings = newWindow.bookings;
+            
+            const statusMessages = {
+                'confirmed': 'האימון אושר בהצלחה',
+                'cancelled': 'האימון בוטל'
+            };
+            
+            newWindow.showMessage(statusMessages[newStatus], 'success');
+            
+            // Refresh appropriate dashboard
+            if (newWindow.currentUser.role === 'admin') {
+                newWindow.loadAdminBookings();
+            } else {
+                newWindow.loadUserBookings();
+            }
+        }
+    };
+    
+    newWindow.confirmBooking = function() {
+        if (!newWindow.selectedService || !newWindow.selectedDate || !newWindow.selectedTime) {
+            newWindow.showMessage('אנא בחר סוג אימון, תאריך ושעה', 'error');
+            return;
+        }
+        
+        const serviceNames = {
+            'personal': 'אימון אישי',
+            'group': 'אימון קבוצתי',
+            'online': 'אימון אונליין'
+        };
+        
+        const servicePrices = {
+            'personal': 150,
+            'group': 80,
+            'online': 100
+        };
+        
+        const newBooking = {
+            id: newWindow.bookings.length + 1,
+            userId: newWindow.currentUser.id,
+            service: newWindow.selectedService,
+            serviceName: serviceNames[newWindow.selectedService],
+            date: newWindow.selectedDate,
+            time: newWindow.selectedTime,
+            status: 'pending',
+            price: servicePrices[newWindow.selectedService],
+            createdAt: new Date().toISOString()
+        };
+        
+        newWindow.bookings.push(newBooking);
+        localStorage.setItem('bookings', JSON.stringify(newWindow.bookings));
+        
+        // Update the original window's data too
+        window.bookings = newWindow.bookings;
+        
+        newWindow.closeModal('bookingModal');
+        newWindow.showMessage('האימון נקבע בהצלחה! מחכה לאישור המאמן', 'success');
+        
+        // Refresh dashboard
+        if (newWindow.currentUser.role === 'client') {
+            newWindow.loadUserBookings();
+        } else if (newWindow.currentUser.role === 'admin') {
+            newWindow.loadAdminBookings();
+        }
+    };
+}
+
+function hideAllDashboards() {
+    // This function is no longer needed since panels open in new windows
+    // But keeping it for compatibility
 }
 
 function loadUserBookings() {
