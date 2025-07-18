@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דני פיט - מאמן כושר אישי</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-dumbbell"></i>
+                <span>דני פיט</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">בית</a>
+                <a href="#about" class="nav-link">אודות</a>
+                <a href="#services" class="nav-link">שירותים</a>
+                <a href="#contact" class="nav-link">צור קשר</a>
+                <button class="btn-login" onclick="openLoginModal()">התחברות</button>
+            </div>
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>שנה את החיים שלך עם <span class="highlight">דני פיט</span></h1>
+            <p>מאמן כושר אישי מקצועי עם ניסיון של 8 שנים בתחום. אני כאן לעזור לך להגיע ליעדים שלך ולשנות את אורח החיים שלך</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="openBookingModal()">קבע אימון</button>
+                <button class="btn-secondary" onclick="scrollToSection('about')">למד עוד</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="trainer-placeholder">
+                <i class="fas fa-user-circle"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>אודות דני</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>מאמן כושר מקצועי ומוסמך</h3>
+                    <p>עם ניסיון של 8 שנים בתחום האימון האישי, אני מתמחה ביצירת תוכניות אימון מותאמות אישית שמביאות תוצאות מדויקות ומתמשכות.</p>
+                    <ul>
+                        <li><i class="fas fa-check"></i> מוסמך מהמכללה הישראלית לכושר ובריאות</li>
+                        <li><i class="fas fa-check"></i> מתמחה באימוני כוח ועיצוב הגוף</li>
+                        <li><i class="fas fa-check"></i> מעל 200 לקוחות מרוצים</li>
+                        <li><i class="fas fa-check"></i> ליווי תזונתי וקבוצות תמיכה</li>
+                    </ul>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <h3>200+</h3>
+                        <p>לקוחות מרוצים</p>
+                    </div>
+                    <div class="stat">
+                        <h3>8</h3>
+                        <p>שנות ניסיון</p>
+                    </div>
+                    <div class="stat">
+                        <h3>95%</h3>
+                        <p>שביעות רצון</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <h2>השירותים שלי</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-dumbbell"></i>
+                    <h3>אימון אישי</h3>
+                    <p>אימונים אישיים מותאמים לרמתך ויעדיך האישיים</p>
+                    <div class="price">₪150 לאימון</div>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-users"></i>
+                    <h3>אימון קבוצתי</h3>
+                    <p>אימונים בקבוצות קטנות עד 4 אנשים</p>
+                    <div class="price">₪80 לאימון</div>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-apple-alt"></i>
+                    <h3>ייעוץ תזונתי</h3>
+                    <p>תוכנית תזונה מותאמת אישית וליווי צמוד</p>
+                    <div class="price">₪200 לחודש</div>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-video"></i>
+                    <h3>אימון אונליין</h3>
+                    <p>אימונים בזום עם ליווי אישי מהבית</p>
+                    <div class="price">₪100 לאימון</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>צור קשר</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>050-1234567</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>danny@dannyfit.co.il</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>תל אביב, חדר כושר פרמיום</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>התחברות</h2>
+            <form id="loginForm">
+                <input type="email" placeholder="אימייל" required>
+                <input type="password" placeholder="סיסמה" required>
+                <button type="submit" class="btn-primary">התחבר</button>
+            </form>
+            <p>אין לך חשבון? <a href="#" onclick="switchToRegister()">הירשם כאן</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('registerModal')">&times;</span>
+            <h2>הרשמה</h2>
+            <form id="registerForm">
+                <input type="text" placeholder="שם מלא" required>
+                <input type="email" placeholder="אימייל" required>
+                <input type="tel" placeholder="טלפון" required>
+                <input type="password" placeholder="סיסמה" required>
+                <button type="submit" class="btn-primary">הירשם</button>
+            </form>
+            <p>יש לך כבר חשבון? <a href="#" onclick="switchToLogin()">התחבר כאן</a></p>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bookingModal')">&times;</span>
+            <h2>קביעת אימון</h2>
+            <div id="bookingStep1" class="booking-step">
+                <h3>בחר סוג אימון</h3>
+                <div class="service-selection">
+                    <div class="service-option" onclick="selectService('personal')">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>אימון אישי</span>
+                        <div class="price">₪150</div>
+                    </div>
+                    <div class="service-option" onclick="selectService('group')">
+                        <i class="fas fa-users"></i>
+                        <span>אימון קבוצתי</span>
+                        <div class="price">₪80</div>
+                    </div>
+                    <div class="service-option" onclick="selectService('online')">
+                        <i class="fas fa-video"></i>
+                        <span>אימון אונליין</span>
+                        <div class="price">₪100</div>
+                    </div>
+                </div>
+            </div>
+            <div id="bookingStep2" class="booking-step" style="display: none;">
+                <h3>בחר תאריך ושעה</h3>
+                <div class="date-picker">
+                    <input type="date" id="selectedDate" onchange="loadAvailableSlots()">
+                </div>
+                <div class="time-slots" id="timeSlots">
+                    <!-- Time slots will be populated dynamically -->
+                </div>
+                <button class="btn-primary" onclick="confirmBooking()" style="margin-top: 20px;">אשר הזמנה</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Dashboard -->
+    <div id="userDashboard" class="dashboard" style="display: none;">
+        <div class="dashboard-header">
+            <h2>לוח הבקרה שלי</h2>
+            <button onclick="logout()" class="btn-secondary">התנתק</button>
+        </div>
+        <div class="dashboard-content">
+            <div class="dashboard-card">
+                <h3>האימונים שלי</h3>
+                <div id="userBookings"></div>
+                <button class="btn-primary" onclick="openBookingModal()">קבע אימון חדש</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="dashboard" style="display: none;">
+        <div class="dashboard-header">
+            <h2>פאנל ניהול</h2>
+            <button onclick="logout()" class="btn-secondary">התנתק</button>
+        </div>
+        <div class="dashboard-tabs">
+            <button class="tab-btn active" onclick="showTab('bookings')">תורים</button>
+            <button class="tab-btn" onclick="showTab('content')">תוכן</button>
+            <button class="tab-btn" onclick="showTab('clients')">לקוחות</button>
+        </div>
+        <div class="dashboard-content">
+            <div id="bookingsTab" class="tab-content active">
+                <h3>ניהול תורים</h3>
+                <div id="adminBookings"></div>
+            </div>
+            <div id="contentTab" class="tab-content">
+                <h3>עריכת תוכן</h3>
+                <div class="content-editor">
+                    <label>כותרת ראשית:</label>
+                    <input type="text" id="heroTitle" value="שנה את החיים שלך עם דני פיט">
+                    <label>תיאור:</label>
+                    <textarea id="heroDescription">מאמן כושר אישי מקצועי עם ניסיון של 8 שנים בתחום...</textarea>
+                    <button class="btn-primary" onclick="updateContent()">עדכן תוכן</button>
+                </div>
+            </div>
+            <div id="clientsTab" class="tab-content">
+                <h3>לקוחות רשומים</h3>
+                <div id="clientsList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
